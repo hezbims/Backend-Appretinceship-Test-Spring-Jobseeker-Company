@@ -1,4 +1,6 @@
-package com.jobseekerapprenticeship.spring_api_test.services;
+package com.jobseekerapprenticeship.spring_api_test.services.auth;
+
+import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 import java.util.Date;
@@ -11,6 +13,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
+@Service
 public class JwtService {
     private static final String SECRET = "608ebd5299e28f92a7c645f7ade96ed125b4c0e9c8858015eab1274d963ec96262a91951638ba81d44ed0d19f1231d3db26cb5229879d3545f0b6e5e8565d9f3";
 

@@ -2,7 +2,7 @@ package com.jobseekerapprenticeship.spring_api_test.configuration;
 
 import com.jobseekerapprenticeship.spring_api_test.entity.User;
 import com.jobseekerapprenticeship.spring_api_test.repository.UserRepository;
-import com.jobseekerapprenticeship.spring_api_test.services.JwtService;
+import com.jobseekerapprenticeship.spring_api_test.services.auth.JwtService;
 
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
