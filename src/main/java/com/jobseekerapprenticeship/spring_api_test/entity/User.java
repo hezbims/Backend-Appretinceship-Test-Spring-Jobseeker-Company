@@ -13,9 +13,9 @@ import lombok.Data;
 @Data
 @Document
 public class User implements UserDetails {
-    private final String username;
-    private final String password;
-    private final UserType userType;
+    private String username;
+    private String password;
+    private UserType userType;
 
 
     @Override
