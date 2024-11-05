@@ -35,14 +35,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // 2. Memparse token
         // 3. Menset security context dengan authentication token yang tepat
 
-        final String username = getUsernameFromRequest(request);
-        if (username == null){
+        final String email = getEmailFromRequest(request);
+        if (email == null){
             filterChain.doFilter(request, response);
             return;
         }
 
 
-        final User user = userRepository.findByUsername(username).orElse(null);
+        final User user = userRepository.findByEmail(email).orElse(null);
         if (user == null){
             filterChain.doFilter(request, response);
             return;
@@ -55,12 +55,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String getUsernameFromRequest(@NonNull HttpServletRequest request){
+    private String getEmailFromRequest(@NonNull HttpServletRequest request){
         final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer "))
             return null;
 
         final String token = authHeader.substring(7);
-        return jwtService.getUsername(token);
+        return jwtService.getEmail(token);
     }
 }

@@ -1,6 +1,7 @@
 package com.jobseekerapprenticeship.spring_api_test.entity;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,7 +16,10 @@ import lombok.Data;
 @Document
 public class User implements UserDetails {
     private ObjectId id;
-    private String username;
+
+    @Indexed(unique = true)
+    private String email;
+
     private String password;
     private UserType userType;
 
@@ -23,6 +27,11 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(userType.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override
