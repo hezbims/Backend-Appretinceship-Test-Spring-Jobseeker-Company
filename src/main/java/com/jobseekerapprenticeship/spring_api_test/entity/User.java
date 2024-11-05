@@ -1,5 +1,6 @@
 package com.jobseekerapprenticeship.spring_api_test.entity;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +14,7 @@ import lombok.Data;
 @Data
 @Document
 public class User implements UserDetails {
+    private ObjectId id;
     private String username;
     private String password;
     private UserType userType;
