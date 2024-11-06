@@ -31,17 +31,21 @@ public class Vacancy {
         String vacancyName,
         String description,
         Integer maximumAge,
-        int minimumYearsExperience,
+        Integer minimumYearsExperience,
         Integer salary
     ){
         this.vacancyName = vacancyName;
         this.description = description;
         this.maximumAge = maximumAge;
-        this.minimumYearsExperience = minimumYearsExperience;
+        this.minimumYearsExperience = minimumYearsExperience == null ? 0 : minimumYearsExperience;
         this.salary = salary;
 
         final long publishedDate = System.currentTimeMillis();
         this.publishedDate = publishedDate;
         this.expiryDate = publishedDate + vacancyExpirationDurationMillis;
+    }
+
+    public void setMinimumYearsExperience(Integer minimumYearsExperience) {
+        this.minimumYearsExperience = minimumYearsExperience == null ? 0 : minimumYearsExperience;
     }
 }
