@@ -21,11 +21,11 @@ public record PutVacancyRequest(
     @Size(min = 1 , max = 5000, message = VacancyErrors.descriptionMust1To5000Char)
     String description,
 
-    @Max(value = 30, message = VacancyErrors.minYearsExpNotNegative)
     @PositiveOrZero(message = VacancyErrors.maxAgeNotNegative)
     Integer maxAge,
 
-    @PositiveOrZero(message = VacancyErrors.minYearsExpNotNegative)
+    @Max(value = 30, message = VacancyErrors.minYearsExpRange)
+    @PositiveOrZero(message = VacancyErrors.minYearsExpRange)
     Integer minimumYearsExperience,
 
     @PositiveOrZero(message = VacancyErrors.salaryNotNegative)

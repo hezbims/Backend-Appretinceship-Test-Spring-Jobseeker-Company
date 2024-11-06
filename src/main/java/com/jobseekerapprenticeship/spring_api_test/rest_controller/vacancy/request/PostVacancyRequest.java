@@ -20,8 +20,8 @@ public record PostVacancyRequest(
     @PositiveOrZero(message = VacancyErrors.maxAgeNotNegative)
     Integer maxAge,
 
-    @Max(value = 30, message = VacancyErrors.minYearsExpNotNegative)
-    @PositiveOrZero(message = VacancyErrors.minYearsExpNotNegative)
+    @Max(value = 30, message = VacancyErrors.minYearsExpRange)
+    @PositiveOrZero(message = VacancyErrors.minYearsExpRange)
     Integer minimumYearsExperience,
 
     @Max(value = 1_000_000_000, message = VacancyErrors.salaryMax1Milliion)

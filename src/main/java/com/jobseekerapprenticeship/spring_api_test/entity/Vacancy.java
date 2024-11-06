@@ -1,6 +1,7 @@
 package com.jobseekerapprenticeship.spring_api_test.entity;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
@@ -9,7 +10,8 @@ import lombok.Data;
 @Data
 @Document
 public class Vacancy {
-    private ObjectId id;
+    @Id
+    private String id;
     private String vacancyName;
     private String description;
     private Integer maximumAge;

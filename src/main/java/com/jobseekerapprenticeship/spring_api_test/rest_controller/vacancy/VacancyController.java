@@ -88,7 +88,7 @@ public class VacancyController {
         if (deletedVacancy == null)
             return new VacancyWithIdNotFound().toHttpResponse();
 
-        repository.deleteById(deletedVacancy.getId());
+        repository.deleteById(new ObjectId(deletedVacancy.getId()));
         return new VacancyDeletedResponse(deletedVacancy).toHttpResponse();
     }
 
