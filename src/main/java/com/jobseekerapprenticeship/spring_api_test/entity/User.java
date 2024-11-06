@@ -1,5 +1,7 @@
 package com.jobseekerapprenticeship.spring_api_test.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,8 +22,19 @@ public class User implements UserDetails {
     @Indexed(unique = true)
     private String email;
 
+    @JsonIgnore
     private String password;
     private UserType userType;
+
+    public User(
+        final String email,
+        final String password,
+        final UserType userType
+    ){
+        this.email = email;
+        this.password = password;
+        this.userType = userType;
+    }
 
 
     @Override
