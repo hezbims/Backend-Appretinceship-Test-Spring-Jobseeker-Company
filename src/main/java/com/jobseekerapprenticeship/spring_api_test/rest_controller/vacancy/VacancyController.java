@@ -1,5 +1,6 @@
 package com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy;
 
+import com.jobseekerapprenticeship.spring_api_test.entity.UserType;
 import com.jobseekerapprenticeship.spring_api_test.entity.Vacancy;
 import com.jobseekerapprenticeship.spring_api_test.repository.VacancyRepository;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller._constant.ApiEndpointUri;
@@ -13,6 +14,7 @@ import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.respo
 
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,6 +33,7 @@ public class VacancyController {
     private final VacancyRepository repository;
 
     @PostMapping("")
+    @PreAuthorize("hasAnyAuthority('" + UserType.AuthorityName.ADMIN + "')")
     public ResponseEntity<?> createNewVacancy(
         @Valid @RequestBody PostVacancyRequest request
     ){
@@ -45,6 +48,7 @@ public class VacancyController {
         return new VacancyCreatedResponse().toHttpResponse();
     }
 
+    @PreAuthorize("hasAnyAuthority('" + UserType.AuthorityName.ADMIN + "')")
     @PutMapping("")
     public ResponseEntity<?> updateVacancy(
         @Valid @RequestBody PutVacancyRequest request
@@ -68,6 +72,7 @@ public class VacancyController {
         return new VacancyUpdatedResponse(newVacancy).toHttpResponse();
     }
 
+    @PreAuthorize("hasAnyAuthority('" + UserType.AuthorityName.ADMIN + "')")
     @DeleteMapping("")
     public ResponseEntity<?> deleteVacancy(
         @Valid @RequestBody DeleteVacancyRequest request
