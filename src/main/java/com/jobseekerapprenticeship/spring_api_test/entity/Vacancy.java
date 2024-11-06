@@ -3,6 +3,7 @@ package com.jobseekerapprenticeship.spring_api_test.entity;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
@@ -16,6 +17,8 @@ public class Vacancy {
     private Integer salary;
     private long publishedDate;
     private long expiryDate;
+
+    public static final long vacancyExpirationDurationMillis = 1000L * 3600 * 24 * 30;
 
     /**
      * @param vacancyName Judul lamaran
@@ -39,6 +42,6 @@ public class Vacancy {
 
         final long publishedDate = System.currentTimeMillis();
         this.publishedDate = publishedDate;
-        this.expiryDate = publishedDate + (1000L * 3600 * 24 * 30);
+        this.expiryDate = publishedDate + vacancyExpirationDurationMillis;
     }
 }
