@@ -7,6 +7,7 @@ import com.jobseekerapprenticeship.spring_api_test.rest_controller._constant.Api
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.request.LoginAccountRequest;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.request.RegisterAccountRequest;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.response.AdminCreationSecretWrongResponse;
+import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.response.EmailAlreadyUsed;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.response.LoginPasswordOrEmailWrong;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.response.LoginSucceedResponse;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.response.UserRegisteredResponse;
@@ -49,6 +50,12 @@ public class AuthController {
             else
                 return new AdminCreationSecretWrongResponse().toHttpResponse();
         }
+
+        final User userWithSameEmail = userRepository.findByEmail(request.email()).orElse(null);
+        if (userWithSameEmail != null){
+            return new EmailAlreadyUsed().toHttpResponse();
+        }
+
         final User newUser = userRepository.insert(new User(
             request.email(),
             passwordEncoder.encode(request.password()),
