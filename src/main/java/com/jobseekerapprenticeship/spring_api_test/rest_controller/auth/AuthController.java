@@ -4,11 +4,18 @@ import com.jobseekerapprenticeship.spring_api_test.entity.User;
 import com.jobseekerapprenticeship.spring_api_test.entity.UserType;
 import com.jobseekerapprenticeship.spring_api_test.repository.UserRepository;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller._constant.ApiEndpointUri;
+import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.request.LoginAccountRequest;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.request.RegisterAccountRequest;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.response.AdminCreationSecretWrongResponse;
+import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.response.LoginPasswordOrEmailWrong;
+import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.response.LoginSucceedResponse;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.auth.response.UserRegisteredResponse;
+import com.jobseekerapprenticeship.spring_api_test.services.auth.JwtService;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +35,8 @@ public class AuthController {
 
     final UserRepository userRepository;
     final BCryptPasswordEncoder passwordEncoder;
+    final AuthenticationManager authManager;
+    final JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerAccount(
@@ -47,5 +56,23 @@ public class AuthController {
         ));
 
         return new UserRegisteredResponse(newUser).toHttpResponse();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginAccount(
+        @Valid @RequestBody LoginAccountRequest request
+    ){
+        try {
+            authManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    request.email(),
+                    request.password()
+            ));
+
+            final String jwt = jwtService.generateJwt(request.email());
+
+            return new LoginSucceedResponse(request.email(), jwt).toHttpResponse();
+        } catch (AuthenticationException e){
+            return new LoginPasswordOrEmailWrong().toHttpResponse();
+        }
     }
 }
