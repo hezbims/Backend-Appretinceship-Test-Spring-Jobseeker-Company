@@ -5,6 +5,6 @@ public record PostVacancyRequest(
     String vacancyName,
     String description,
     Integer maxAge,
-    int minimumYearsExperience,
+    Integer minimumYearsExperience,
     Integer salary
 ) {}

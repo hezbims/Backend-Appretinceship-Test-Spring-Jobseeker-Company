@@ -3,14 +3,17 @@ package com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy;
 import com.jobseekerapprenticeship.spring_api_test.entity.Vacancy;
 import com.jobseekerapprenticeship.spring_api_test.repository.VacancyRepository;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller._constant.ApiEndpointUri;
+import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.request.DeleteVacancyRequest;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.request.PostVacancyRequest;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.request.PutVacancyRequest;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.response.VacancyCreatedResponse;
+import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.response.VacancyDeletedResponse;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.response.VacancyUpdatedResponse;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.response.VacancyWithIdNotFound;
 
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,5 +66,17 @@ public class VacancyController {
         final Vacancy newVacancy = repository.save(oldVacancy);
 
         return new VacancyUpdatedResponse(newVacancy).toHttpResponse();
+    }
+
+    @DeleteMapping("")
+    public ResponseEntity<?> deleteVacancy(
+        @Valid @RequestBody DeleteVacancyRequest request
+    ){
+        final Vacancy deletedVacancy = repository.findById(new ObjectId(request.vacancyId())).orElse(null);
+        if (deletedVacancy == null)
+            return new VacancyWithIdNotFound().toHttpResponse();
+
+        repository.deleteById(deletedVacancy.getId());
+        return new VacancyDeletedResponse(deletedVacancy).toHttpResponse();
     }
 }
