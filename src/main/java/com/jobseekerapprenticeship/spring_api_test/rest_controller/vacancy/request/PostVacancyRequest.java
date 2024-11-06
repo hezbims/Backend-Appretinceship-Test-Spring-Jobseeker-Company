@@ -1,32 +1,30 @@
 package com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.request;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.hibernate.validator.constraints.Range;
+import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.VacancyErrors;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 public record PostVacancyRequest(
-    @NotBlank(message = "Panjang vacancyName harus 2-75 karakter")
-    @Size(min = 2, max = 75, message = "Panjang vacancyName harus 2-75 karakter")
+    @NotBlank(message = VacancyErrors.vacancyNameMustBe2To75Char)
+    @Size(min = 2, max = 75, message = VacancyErrors.vacancyNameMustBe2To75Char)
     String vacancyName,
 
-    @NotBlank(message = "Panjang description harus 1-5000 karakter")
-    @Size(min = 1, max = 5000, message = "Panjang description harus 1-5000 karakter")
+    @NotBlank(message = VacancyErrors.descriptionMust1To5000Char)
+    @Size(min = 1, max = 5000, message = VacancyErrors.descriptionMust1To5000Char)
     String description,
 
-    @PositiveOrZero(message = "maxAge harus >= 0")
+    @PositiveOrZero(message = VacancyErrors.maxAgeNotNegative)
     Integer maxAge,
 
-    @PositiveOrZero(message = "minimumYearsExperience harus >= 0")
+    @Max(value = 30, message = VacancyErrors.minYearsExpNotNegative)
+    @PositiveOrZero(message = VacancyErrors.minYearsExpNotNegative)
     Integer minimumYearsExperience,
 
-    @Max(value = 1_000_000_000, message = "Maksimal salary adalah 1 milyar")
-    @PositiveOrZero(message = "salary tidak boleh negatif")
+    @Max(value = 1_000_000_000, message = VacancyErrors.salaryMax1Milliion)
+    @PositiveOrZero(message = VacancyErrors.salaryNotNegative)
     Integer salary
 ) {}
