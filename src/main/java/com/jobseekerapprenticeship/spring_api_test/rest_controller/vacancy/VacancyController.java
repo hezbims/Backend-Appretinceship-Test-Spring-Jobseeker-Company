@@ -40,11 +40,11 @@ public class VacancyController {
     private final VacancyRepository repository;
 
     @PostMapping("")
-    @PreAuthorize("hasAnyAuthority('" + UserType.AuthorityName.ADMIN + "')")
+    @PreAuthorize("hasAuthority('" + UserType.AuthorityName.ADMIN + "')")
     public ResponseEntity<?> createNewVacancy(
         @Valid @RequestBody PostVacancyRequest request
     ){
-        repository.insert(new Vacancy(
+        final Vacancy newVacancy = repository.insert(new Vacancy(
             request.vacancyName(),
             request.description(),
             request.maxAge(),
@@ -52,7 +52,7 @@ public class VacancyController {
             request.salary()
         ));
 
-        return new VacancyCreatedResponse().toHttpResponse();
+        return new VacancyCreatedResponse(newVacancy).toHttpResponse();
     }
 
     @PreAuthorize("hasAnyAuthority('" + UserType.AuthorityName.ADMIN + "')")
