@@ -1,14 +1,14 @@
 package com.jobseekerapprenticeship.spring_api_test.entity;
 
-import org.bson.types.ObjectId;
+import lombok.Builder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @Document
+@Builder
 public class Vacancy {
     @Id
     private String id;

@@ -2,6 +2,7 @@ package com.jobseekerapprenticeship.spring_api_test.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.Builder;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,6 +17,7 @@ import lombok.Data;
 
 @Data
 @Document
+@Builder
 public class User implements UserDetails {
     private ObjectId id;
 
