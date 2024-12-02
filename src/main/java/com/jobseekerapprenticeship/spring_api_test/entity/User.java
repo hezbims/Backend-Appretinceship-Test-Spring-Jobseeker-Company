@@ -1,8 +1,9 @@
 package com.jobseekerapprenticeship.spring_api_test.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,11 +14,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-import lombok.Data;
-
 @Data
 @Document
-@Builder
+@Accessors(chain = true)
+@NoArgsConstructor
 public class User implements UserDetails {
     private ObjectId id;
 

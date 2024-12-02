@@ -3,8 +3,10 @@ package com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.resp
 import com.jobseekerapprenticeship.spring_api_test.entity.Vacancy;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller._response.MyApiRestResult;
 
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+@NoArgsConstructor
 public class VacancyCreatedResponse extends MyApiRestResult<Vacancy> {
     public VacancyCreatedResponse(Vacancy newVacancy){
         super(

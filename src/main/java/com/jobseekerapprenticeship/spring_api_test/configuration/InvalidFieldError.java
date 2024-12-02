@@ -7,12 +7,12 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 
 public class InvalidFieldError extends MyApiRestResult<Object> {
-    public InvalidFieldError(List<MySimpleFieldError> erros){
+    public InvalidFieldError(List<MySimpleFieldError> errors){
         super(
             "Ada field yang tidak valid",
             "InvalidField",
                 HttpStatus.BAD_REQUEST,
-                erros
+                errors
         );
     }
 }

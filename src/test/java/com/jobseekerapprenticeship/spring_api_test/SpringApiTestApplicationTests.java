@@ -1,10 +1,9 @@
 package com.jobseekerapprenticeship.spring_api_test;
 
+import com.jobseekerapprenticeship.spring_api_test.testConfig.containers.BaseIntegrationTestContainer;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class SpringApiTestApplicationTests {
+class SpringApiTestApplicationTests extends BaseIntegrationTestContainer {
 
 	@Test
 	void contextLoads() {

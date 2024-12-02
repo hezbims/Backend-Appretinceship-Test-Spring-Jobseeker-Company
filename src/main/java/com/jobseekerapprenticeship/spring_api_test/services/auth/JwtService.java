@@ -1,35 +1,29 @@
 package com.jobseekerapprenticeship.spring_api_test.services.auth;
 
+import com.jobseekerapprenticeship.spring_api_test.configuration.timeProvider.ITimeProvider;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
 
-import javax.crypto.SecretKey;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-
 @Service
+@RequiredArgsConstructor
 public class JwtService {
     private static final String SECRET = "608ebd5299e28f92a7c645f7ade96ed125b4c0e9c8858015eab1274d963ec96262a91951638ba81d44ed0d19f1231d3db26cb5229879d3545f0b6e5e8565d9f3";
+    private final ITimeProvider timeProvider;
 
     /**
-     * Return email apabila token valid, return null apabila token tidak valid
+     * Return email apabila token valid
+     * @throws ExpiredJwtException apabila token expired, maka akan keluar exception ini
      * @param token JWT Token
      */
-    public String getEmail(String token){
-        if (isExpired(token))
-            return null;
+    public String getEmail(String token) throws ExpiredJwtException {
         return getClaim(token, Claims::getSubject);
-    }
-
-    private boolean isExpired(final String token){
-        final Date expirationDate = getClaim(token, Claims::getExpiration);
-        return new Date(System.currentTimeMillis()).after(expirationDate);
     }
 
     private <T> T getClaim(String token, Function<Claims, T> resolver){
@@ -38,6 +32,7 @@ public class JwtService {
 
     private Claims getAllClaims(String token){
         final JwtParser jwtParser = Jwts.parser()
+                .clock(() -> new Date(timeProvider.getCurrentTimeMillis()))
                 .verifyWith(getSecretKey())
                 .build();
 
@@ -53,7 +48,7 @@ public class JwtService {
     }
 
     public String generateJwt(String email){
-        final Date currentTime = new Date(System.currentTimeMillis());
+        final Date currentTime = new Date(timeProvider.getCurrentTimeMillis());
         final Date expirationTime = new Date(currentTime.getTime() + 1000 * 3600 * 24 * 7);
 
         return Jwts

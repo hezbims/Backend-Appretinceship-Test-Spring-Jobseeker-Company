@@ -1,35 +1,26 @@
 package com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy;
 
-import com.jobseekerapprenticeship.spring_api_test.entity.User;
+import com.jobseekerapprenticeship.spring_api_test.configuration.timeProvider.ITimeProvider;
 import com.jobseekerapprenticeship.spring_api_test.entity.UserType;
 import com.jobseekerapprenticeship.spring_api_test.entity.Vacancy;
+import com.jobseekerapprenticeship.spring_api_test.repository.UserRepository;
 import com.jobseekerapprenticeship.spring_api_test.repository.VacancyRepository;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller._constant.ApiEndpointUri;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.request.DeleteVacancyRequest;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.request.PostVacancyRequest;
 import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.request.PutVacancyRequest;
-import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.response.GetVacanciesResponse;
-import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.response.VacancyCreatedResponse;
-import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.response.VacancyDeletedResponse;
-import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.response.VacancyUpdatedResponse;
-import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.response.VacancyWithIdNotFound;
-
+import com.jobseekerapprenticeship.spring_api_test.rest_controller.vacancy.response.*;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 @RequestMapping(ApiEndpointUri.vacancy)
 @RestController
@@ -37,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 public class VacancyController {
 
     private final VacancyRepository repository;
+    private final UserRepository userRepository;
+    private final ITimeProvider timeProvider;
 
     @PostMapping("")
     @PreAuthorize("hasAuthority('" + UserType.AuthorityName.ADMIN + "')")
@@ -48,7 +41,8 @@ public class VacancyController {
             request.description(),
             request.maxAge(),
             request.minimumYearsExperience(),
-            request.salary()
+            request.salary(),
+            timeProvider
         ));
 
         return new VacancyCreatedResponse(newVacancy).toHttpResponse();
@@ -71,7 +65,9 @@ public class VacancyController {
         oldVacancy.setSalary(request.salary());
 
         if (request.repost())
-            oldVacancy.setExpiryDate(Vacancy.vacancyExpirationDurationMillis + System.currentTimeMillis());
+            oldVacancy.setExpiryDate(
+                Vacancy.vacancyExpirationDurationMillis + timeProvider.getCurrentTimeMillis()
+            );
 
         final Vacancy newVacancy = repository.save(oldVacancy);
 
@@ -95,13 +91,19 @@ public class VacancyController {
     public ResponseEntity<?> getVacancies(
         Authentication auth
     ){
-        final User currentUser = (User) auth.getPrincipal();
+        final UserDetails currentUserDetails = (UserDetails) auth.getPrincipal();
+        final boolean currentUserIsAdmin = currentUserDetails
+                .getAuthorities()
+                .contains(new SimpleGrantedAuthority(UserType.ADMIN.authorityName));
+
         final List<Vacancy> listVacancies;
 
-        if (currentUser.getUserType() == UserType.ADMIN)
+        if (currentUserIsAdmin) {
             listVacancies = repository.findAll();
-        else
-            listVacancies = repository.findByNotExpired(System.currentTimeMillis());
+        }
+        else {
+            listVacancies = repository.findByNotExpired(timeProvider.getCurrentTimeMillis());
+        }
 
         return new GetVacanciesResponse(listVacancies).toHttpResponse();
     }

@@ -1,14 +1,16 @@
 package com.jobseekerapprenticeship.spring_api_test.entity;
 
-import lombok.Builder;
+import com.jobseekerapprenticeship.spring_api_test.configuration.timeProvider.ITimeProvider;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import lombok.Data;
-
 @Data
 @Document
-@Builder
+@NoArgsConstructor
+@Accessors(chain = true)
 public class Vacancy {
     @Id
     private String id;
@@ -34,7 +36,8 @@ public class Vacancy {
         String description,
         Integer maximumAge,
         Integer minimumYearsExperience,
-        Integer salary
+        Integer salary,
+        ITimeProvider timeProvider
     ){
         this.vacancyName = vacancyName;
         this.description = description;
@@ -42,12 +45,14 @@ public class Vacancy {
         this.minimumYearsExperience = minimumYearsExperience == null ? 0 : minimumYearsExperience;
         this.salary = salary;
 
-        final long publishedDate = System.currentTimeMillis();
+        final long publishedDate = timeProvider.getCurrentTimeMillis();
         this.publishedDate = publishedDate;
         this.expiryDate = publishedDate + vacancyExpirationDurationMillis;
     }
 
-    public void setMinimumYearsExperience(Integer minimumYearsExperience) {
+    public Vacancy setMinimumYearsExperience(Integer minimumYearsExperience) {
         this.minimumYearsExperience = minimumYearsExperience == null ? 0 : minimumYearsExperience;
+        return this;
     }
+
 }
